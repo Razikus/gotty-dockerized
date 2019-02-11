@@ -1,4 +1,4 @@
-FROM alpine:3.8
+FROM alpine:3.8 as builder
 ARG gottyurl=https://github.com/yudai/gotty/archive/v2.0.0-alpha.3.tar.gz
 
 RUN mkdir -p /gottysrc/src/github.com/yudai/gotty
@@ -11,6 +11,9 @@ RUN chmod +x /usr/bin/gotty
 RUN apk del go 
 RUN rm -rf gottysrc && rm -rf /var/cache/apk/*
 
+FROM alpine:3.8
+COPY --from=builder /usr/bin/gotty /usr/bin/gotty
+RUN chmod +x /usr/bin/gotty
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
